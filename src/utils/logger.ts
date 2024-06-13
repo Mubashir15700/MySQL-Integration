@@ -1,13 +1,18 @@
 import winston from "winston";
 import fs from "fs";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
+import { dirname, join } from "path";
 
-const logDir = dirname(fileURLToPath(import.meta.url) + "../../logs");
+// Get the current file's path and convert it to a directory path
+const currentFilePath = fileURLToPath(import.meta.url);
+const currentDirPath = dirname(currentFilePath);
+
+// Navigate back two levels and then enter the "logs" directory
+const logsDirPath = join(currentDirPath, "../../logs");
 
 // Create logs directory if it doesn't exist
-if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir);
+if (!fs.existsSync(logsDirPath)) {
+    fs.mkdirSync(logsDirPath);
 }
 
 // Define log file paths
