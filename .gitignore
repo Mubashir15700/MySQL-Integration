@@ -1,8 +1,11 @@
+# Ignore the 'node_modules' folder
 /node_modules
+
+# Ignore the '.env' folder
 .env
 
 # Ignore compiled output
 dist
 
-# Ignore logs folder
+# Ignore 'logs' folder
 /logs
