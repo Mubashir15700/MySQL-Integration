@@ -1,10 +1,13 @@
 import { Request, Response } from "express";
-import morgan from "morgan";
 import fs from "fs";
 import path from "path";
-import logger from "../utils/logger";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import morgan from "morgan";
+import logger from "../utils/logger.ts";
 
-const logDir = path.join(__dirname, "../../logs");
+// Resolve the log directory relative to the current module
+const logDir = dirname(fileURLToPath(import.meta.url)) + "/../../logs";
 
 // Create a write stream (in append mode) for HTTP logs
 const accessLogStream = fs.createWriteStream(path.join(logDir, "http.log"), { flags: "a" });

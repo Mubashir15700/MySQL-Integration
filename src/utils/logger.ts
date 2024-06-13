@@ -1,8 +1,9 @@
 import winston from "winston";
 import fs from "fs";
-import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
-const logDir = path.join(__dirname, "../../logs");
+const logDir = dirname(fileURLToPath(import.meta.url) + "../../logs");
 
 // Create logs directory if it doesn't exist
 if (!fs.existsSync(logDir)) {

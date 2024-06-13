@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
-import { morganMiddleware, morganWinstonMiddleware } from "./middlewares/logging";
-import logger from "./utils/logger";
+import { morganMiddleware, morganWinstonMiddleware } from "./middlewares/logging.ts";
+import logger from "./utils/logger.ts";
 
 const app = express();
 const port = process.env.PORT;

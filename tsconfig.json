@@ -31,7 +31,9 @@
       ]
     },
     "allowSyntheticDefaultImports": true, /* Allow 'import x from y' when a module doesn't have a default export. */
-    "resolveJsonModule": true /* Enable importing .json files. */
+    "resolveJsonModule": true, /* Enable importing .json files. */
+    "allowImportingTsExtensions": true,
+    "noEmit": true, // or "emitDeclarationOnly": true,
   },
   "include": [
     "src/**/*",
