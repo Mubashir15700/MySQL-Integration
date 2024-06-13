@@ -1,0 +1,11 @@
+{
+    "watch": [
+        "src"
+    ],
+    "ext": "ts js",
+    "ignore": [
+        "tests/**/*.test.ts"
+    ],
+    "exec": "node --env-file=.env --loader ts-node/esm src/app.ts",
+    "delay": "1000"
+}
