@@ -1,7 +1,8 @@
-import winston from "winston";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import winston from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
 
 // Get the current file's path and convert it to a directory path
 const currentFilePath = fileURLToPath(import.meta.url);
@@ -28,9 +29,30 @@ const logger = winston.createLogger({
         winston.format.json()
     ),
     transports: [
-        new winston.transports.File({ filename: errorLogFilePath, level: "error" }),
-        new winston.transports.File({ filename: warnLogFilePath, level: "warn" }),
-        new winston.transports.File({ filename: infoLogFilePath, level: "info" }),
+        new DailyRotateFile({
+            filename: join(logsDirPath, "error-%DATE%.log"),
+            level: "error",
+            datePattern: "YYYY-MM-DD",
+            zippedArchive: true,
+            maxSize: "20m", // Max size of each file
+            maxFiles: "14d", // Retain logs for 14 days
+        }),
+        new DailyRotateFile({
+            filename: join(logsDirPath, "warn-%DATE%.log"),
+            level: "warn",
+            datePattern: "YYYY-MM-DD",
+            zippedArchive: true,
+            maxSize: "20m", // Max size of each file
+            maxFiles: "14d", // Retain logs for 14 days
+        }),
+        new DailyRotateFile({
+            filename: join(logsDirPath, "info-%DATE%.log"),
+            level: "info",
+            datePattern: "YYYY-MM-DD",
+            zippedArchive: true,
+            maxSize: "20m", // Max size of each file
+            maxFiles: "14d", // Retain logs for 14 days
+        }),
     ],
 });
 
