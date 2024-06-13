@@ -1,4 +1,20 @@
-export const MYSQL_HOST = process.env.MYSQL_HOST;
-export const MYSQL_USER = process.env.MYSQL_USER;
-export const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD;
-export const MYSQL_DATABASE = process.env.MYSQL_DATABASE;
+import mysql from "mysql2/promise";
+
+const pool = mysql.createPool({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+});
+
+export const getConnection = async () => {
+    try {
+        const connection = await pool.getConnection();
+        return connection;
+    } catch (error: any) {
+        throw new Error(`Error connecting to MySQL: ${error.message}`);
+    }
+};
