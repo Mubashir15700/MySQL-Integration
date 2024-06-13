@@ -11,7 +11,8 @@
     "dev": "nodemon --watch src --exec 'node --env-file=.env --loader ts-node/esm src/app.ts'",
     "build": "tsc",
     "test": "jest",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
   },
   "author": "",
   "license": "ISC",

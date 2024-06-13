@@ -1,4 +1,5 @@
 import mysql from "mysql2/promise";
+import AppError from "@src/utils/AppError";
 
 const pool = mysql.createPool({
     host: process.env.MYSQL_HOST,
@@ -15,6 +16,6 @@ export const getConnection = async () => {
         const connection = await pool.getConnection();
         return connection;
     } catch (error: any) {
-        throw new Error(`Error connecting to MySQL: ${error.message}`);
+        throw new AppError(`Error connecting to MySQL: ${error.message}`, 500);
     }
 };

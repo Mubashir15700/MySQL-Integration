@@ -1,8 +1,12 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { getConnection } from "../configs/dbConfig.ts";
-import logger from "../utils/logger.ts";
+import AppError from "@src/utils/AppError.ts";
 
-export const createUsersTable = async (req: Request, res: Response) => {
+export const createUsersTable = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     let connection;
     try {
         // Acquire connection from the pool
@@ -17,10 +21,9 @@ export const createUsersTable = async (req: Request, res: Response) => {
             )
         `;
         await connection.execute(createTableQuery);
-        res.status(200).send('Users table created successfully');
+        res.status(200).send("Users table created successfully");
     } catch (error: any) {
-        logger.error(`Error creating users table: ${error.message}`);
-        res.status(500).json({ error: 'Error creating users table' });
+        next(new AppError(`Error creating users table: ${error.message}`, 500));
     } finally {
         // Always release connection back to the pool
         if (connection) {
@@ -29,19 +32,22 @@ export const createUsersTable = async (req: Request, res: Response) => {
     }
 };
 
-export const getUsers = async (req: Request, res: Response) => {
+export const getUsers = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     let connection;
     try {
         // Acquire connection from the pool
         connection = await getConnection();
 
         // Execute query
-        const [rows, fields] = await connection.execute("SELECT * FROM users");
+        const [rows] = await connection.execute("SELECT * FROM users");
 
         res.status(200).json(rows);
     } catch (error: any) {
-        logger.error(`Error fetching users: ${error.message}`);
-        res.status(500).json({ error: "Error fetching users" });
+        next(new AppError(`Error fetching users: ${error.message}`, 500));
     } finally {
         // Always release connection back to the pool
         if (connection) {

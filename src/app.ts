@@ -1,7 +1,11 @@
 import express, { Request, Response } from "express";
-import { morganMiddleware, morganWinstonMiddleware } from "./middlewares/logging.ts";
+import {
+    morganMiddleware,
+    morganWinstonMiddleware,
+} from "./middlewares/logging.ts";
 import logger from "./utils/logger.ts";
 import userRoutes from "./routes/userRoutes.ts";
+import errorHandler from "./middlewares/errorHandler.ts";
 
 const app = express();
 
@@ -18,6 +22,9 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api", userRoutes);
+
+// Global error handling middleware
+app.use(errorHandler);
 
 app.listen(port, () => {
     logger.info(`Server is running at http://localhost:${port}`);

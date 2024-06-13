@@ -16,17 +16,12 @@ if (!fs.existsSync(logsDirPath)) {
     fs.mkdirSync(logsDirPath);
 }
 
-// Define log file paths
-const errorLogFilePath = "./logs/error.log";
-const warnLogFilePath = "./logs/warn.log";
-const infoLogFilePath = "./logs/info.log";
-
 // Configure Winston logger
 const logger = winston.createLogger({
     level: "info",
     format: winston.format.combine(
         winston.format.timestamp(),
-        winston.format.json()
+        winston.format.json(),
     ),
     transports: [
         new DailyRotateFile({
@@ -58,9 +53,11 @@ const logger = winston.createLogger({
 
 // Optionally, add a console transport for development/debugging
 if (process.env.NODE_ENV !== "production") {
-    logger.add(new winston.transports.Console({
-        format: winston.format.simple(),
-    }));
+    logger.add(
+        new winston.transports.Console({
+            format: winston.format.simple(),
+        }),
+    );
 }
 
 export default logger;

@@ -14,7 +14,10 @@ const currentDirPath = dirname(currentFilePath);
 const logsDirPath = join(currentDirPath, "../../logs");
 
 // Create a write stream (in append mode) for HTTP logs
-const accessLogStream = fs.createWriteStream(path.join(logsDirPath, "http.log"), { flags: "a" });
+const accessLogStream = fs.createWriteStream(
+    path.join(logsDirPath, "http.log"),
+    { flags: "a" },
+);
 
 // Define stream options for Morgan
 const streamOptions: morgan.Options<Request, Response> = {
