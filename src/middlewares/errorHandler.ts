@@ -1,16 +1,35 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import logger from "../utils/logger.ts";
+import AppError from "../utils/AppError.ts";
 
-interface CustomError extends Error {
-    statusCode?: number;
-}
+const errorHandler = (
+    err: Error,
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    let statusCode: number;
+    let message: string;
 
-const errorHandler = (err: CustomError, req: Request, res: Response) => {
-    const statusCode = err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+    // Check if the error is an instance of AppError
+    if (err instanceof AppError) {
+        statusCode = err.statusCode;
+        message = err.message;
+    } else {
+        // Default to 500 Internal Server Error for non-AppError errors
+        statusCode = 500;
+        message = err.message || "Internal Server Error";
+    }
 
+    // Log the error
     logger.error(`Error: ${message}, Status Code: ${statusCode}`);
 
+    // Ensure response headers are sent
+    if (res.headersSent) {
+        return next(err);
+    }
+
+    // Respond with JSON error message
     res.status(statusCode).json({
         status: "error",
         statusCode,

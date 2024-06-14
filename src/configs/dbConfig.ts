@@ -1,5 +1,5 @@
 import mysql from "mysql2/promise";
-import AppError from "@src/utils/AppError";
+import AppError from "../utils/AppError.ts";
 
 const pool = mysql.createPool({
     host: process.env.MYSQL_HOST,

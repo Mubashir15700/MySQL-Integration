@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
+import { RowDataPacket } from "mysql2";
 import { getConnection } from "../configs/dbConfig.ts";
-import AppError from "@src/utils/AppError.ts";
+import AppError from "../utils/AppError.ts";
+import { HttpStatusCode } from "../constants/httpStatusCodes.ts";
 
 export const createUsersTable = async (
     req: Request,
@@ -20,10 +22,16 @@ export const createUsersTable = async (
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `;
+
         await connection.execute(createTableQuery);
-        res.status(200).send("Users table created successfully");
+        res.status(HttpStatusCode.OK).send("Users table created successfully");
     } catch (error: any) {
-        next(new AppError(`Error creating users table: ${error.message}`, 500));
+        next(
+            new AppError(
+                `Error creating users table: ${error.message}`,
+                HttpStatusCode.INTERNAL_SERVER,
+            ),
+        );
     } finally {
         // Always release connection back to the pool
         if (connection) {
@@ -45,13 +53,24 @@ export const getUsers = async (
         // Execute query
         const [rows] = await connection.execute("SELECT * FROM users");
 
-        res.status(200).json(rows);
+        // Check if no users found
+        if (!(rows as RowDataPacket[]).length) {
+            throw new AppError("No users found", HttpStatusCode.NOT_FOUND);
+        }
+
+        res.status(HttpStatusCode.OK).json(rows);
     } catch (error: any) {
-        next(new AppError(`Error fetching users: ${error.message}`, 500));
+        next(
+            new AppError(
+                error.message
+                    ? `Error fetching users: ${error.message}`
+                    : "Error fetching users",
+                error.statusCode || HttpStatusCode.INTERNAL_SERVER,
+            ),
+        );
     } finally {
-        // Always release connection back to the pool
         if (connection) {
-            connection.release(); // Release the connection
+            connection.release();
         }
     }
 };
